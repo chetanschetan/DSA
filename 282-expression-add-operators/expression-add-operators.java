@@ -1,12 +1,11 @@
 class Solution {
-    // char[] op = {'+','-','*'};
     public List<String> addOperators(String num, int target) {
         List<String> res = new ArrayList<>();
-        solve(num, 0, target, 0, 0, res, "");
-        return res; 
+        solve(num, target, 0, 0, 0, res, "");
+        return res;
     }
-
-    public void solve(String num, int index, int target, long total, long prev, List<String> res, String exp){
+    
+    public void solve(String num, int target, int index, long total, long prev, List<String> res, String exp){
         if(index == num.length()){
             if(total == target){
                 res.add(exp);
@@ -15,27 +14,21 @@ class Solution {
         }
 
         for(int end=index;end<num.length();end++){
-            String numStr = num.substring(index,end+1);
+            String newStr = num.substring(index, end+1);
 
-            if(numStr.length() > 1 && numStr.charAt(0) == '0'){
+            if(newStr.length()>1 && newStr.charAt(0) == '0'){
                 break;
             }
 
-            long currNum = Long.parseLong(numStr);
+            long currNum = Long.parseLong(newStr);
 
             if(index == 0){
-                solve(num, end+1, target, currNum , currNum, res, numStr);
+                solve(num, target, end+1, currNum, currNum, res, exp+newStr);
             }else{
-                solve(num, end+1, target, total + currNum, currNum, res,
-                 exp+"+" +numStr);
-
-                solve(num, end+1, target, total - currNum, -currNum, res, 
-                 exp+"-"+numStr);
-
-                solve(num, end+1, target, (total - prev) + (prev * currNum),
-                 prev * currNum, res, exp+"*"+numStr);
+                solve(num, target, end+1, total + currNum, currNum, res, exp+"+"+newStr);
+                solve(num, target, end+1, total - currNum, -currNum, res, exp+"-"+newStr);
+                solve(num, target, end+1, (total - prev) + (currNum * prev), prev*currNum, res, exp+"*"+newStr);
             }
-                                                               
         }
     }
-    }
+}
